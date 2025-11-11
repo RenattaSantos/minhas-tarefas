@@ -1,0 +1,7 @@
+{
+  "name": "tarefas-app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
