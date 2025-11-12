@@ -241,3 +241,34 @@ ion-fab ion-fab-button {
   --background: linear-gradient(135deg, #ec4899, #6366f1);
   --box-shadow: 0 16px 30px rgba(236, 72, 153, 0.55);
 }
+
+/* ============================= */
+/* BOTÃO DE EXCLUIR USUÁRIO (CARD ADMIN) */
+/* ============================= */
+ion-card ion-item ion-buttons[slot="end"] ion-button[color="danger"] {
+  --background: rgba(239, 68, 68, 0.1); /* fundo vermelho clarinho */
+  --color: #ef4444; /* ícone vermelho */
+  --border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  margin-left: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
+
+  ion-icon {
+    font-size: 1.1rem;
+  }
+
+  &:hover {
+    --background: rgba(239, 68, 68, 0.2);
+    transform: scale(1.05);
+  }
+}
+
+/* Ajusta alinhamento do botão dentro do item */
+ion-card ion-item ion-buttons[slot="end"] {
+  display: flex;
+  align-items: center;
+}

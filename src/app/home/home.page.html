@@ -38,13 +38,12 @@
     <ion-card-content>
       <ion-list lines="none">
         <ion-item
-          button
-          detail="false"
           *ngFor="let u of usuarios"
           (click)="selecionarUsuario(u)"
           [class.usuario-selecionado]="usuarioSelecionado?.id === u.id">
 
           <ion-icon name="person-circle-outline" slot="start"></ion-icon>
+
           <ion-label>
             <h2>{{ u.nome }}</h2>
             <p>{{ u.email }}</p>
@@ -53,6 +52,13 @@
           <ion-badge [color]="u.tipo === 'admin' ? 'danger' : 'medium'">
             {{ u.tipo === 'admin' ? 'Admin' : 'Usuário' }}
           </ion-badge>
+
+          <!-- Botão de exclusão (só aparece se não for admin) -->
+          <ion-buttons slot="end" *ngIf="u.tipo !== 'admin'">
+            <ion-button color="danger" fill="clear" (click)="excluirUsuario(u)">
+              <ion-icon name="trash-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
         </ion-item>
       </ion-list>
 
@@ -205,8 +211,8 @@
   <!-- Loading -->
   <ion-loading
     [isOpen]="carregando"
-    message="Aguarde..."
-  ></ion-loading>
+    message="Aguarde...">
+  </ion-loading>
 
   <!-- Toast -->
   <ion-toast
@@ -214,6 +220,6 @@
     [message]="mensagemToast"
     duration="2000"
     (didDismiss)="mostrarToast = false">
-  ></ion-toast>
+  </ion-toast>
 
 </ion-content>
