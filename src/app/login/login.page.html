@@ -1,0 +1,116 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>
+      {{ modoCadastro ? 'Cadastro' : 'Login' }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding login-content">
+  <div class="login-wrapper">
+
+    <!-- Logo + título -->
+    <div class="logo-area">
+      <div class="logo-icon-wrapper">
+        <ion-icon name="checkmark-done-outline"></ion-icon>
+      </div>
+      <h1>Minhas Tarefas</h1>
+      <p class="subtexto">
+        📝 Organize seu dia <br />
+        Cadastre, conclua e acompanhe suas tarefas de forma simples.
+      </p>
+    </div>
+
+    <!-- Card de login / cadastro -->
+    <ion-card>
+      <ion-card-content>
+
+        <!-- 🔹 MODO LOGIN -->
+        <ng-container *ngIf="!modoCadastro; else blocoCadastro">
+          <h2 class="card-title">Seja bem-vindo(a) 👋</h2>
+
+          <ion-item lines="full">
+            <ion-label position="stacked">E-mail</ion-label>
+            <ion-input
+              type="email"
+              [(ngModel)]="email"
+              placeholder="Digite seu e-mail">
+            </ion-input>
+          </ion-item>
+
+          <ion-item lines="full">
+            <ion-label position="stacked">Senha</ion-label>
+            <ion-input
+              type="password"
+              [(ngModel)]="senha"
+              placeholder="Digite sua senha">
+            </ion-input>
+          </ion-item>
+
+          <ion-button
+            expand="block"
+            (click)="login()"
+            [disabled]="carregando">
+            Entrar
+          </ion-button>
+
+          <div class="switch-mode">
+            <span>Não tem conta?</span>
+            <button type="button" (click)="alternarModo()">Cadastre-se</button>
+          </div>
+        </ng-container>
+
+        <!-- 🔹 MODO CADASTRO -->
+        <ng-template #blocoCadastro>
+          <h2 class="card-title">Crie sua conta ✨</h2>
+
+          <ion-item lines="full">
+            <ion-label position="stacked">Nome completo</ion-label>
+            <ion-input
+              type="text"
+              [(ngModel)]="nomeCompleto"
+              placeholder="Digite seu nome completo">
+            </ion-input>
+          </ion-item>
+
+          <ion-item lines="full">
+            <ion-label position="stacked">E-mail</ion-label>
+            <ion-input
+              type="email"
+              [(ngModel)]="emailCadastro"
+              placeholder="Digite seu e-mail">
+            </ion-input>
+          </ion-item>
+
+          <ion-item lines="full">
+            <ion-label position="stacked">Senha</ion-label>
+            <ion-input
+              type="password"
+              [(ngModel)]="senhaCadastro"
+              placeholder="Crie uma senha">
+            </ion-input>
+          </ion-item>
+
+          <ion-button
+            expand="block"
+            (click)="cadastrar()"
+            [disabled]="carregando">
+            Criar conta
+          </ion-button>
+
+          <div class="switch-mode">
+            <span>Já tem conta?</span>
+            <button type="button" (click)="alternarModo()">Entrar</button>
+          </div>
+        </ng-template>
+
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Loading enquanto faz login/cadastro -->
+  <ion-loading
+    [isOpen]="carregando"
+    message="Aguarde...">
+  </ion-loading>
+</ion-content>

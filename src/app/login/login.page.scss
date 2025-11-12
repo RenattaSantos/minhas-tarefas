@@ -1,0 +1,119 @@
+/* Fundo geral em tons pastel, um pouco mais escuro */
+ion-content.login-content {
+  --background: linear-gradient(180deg, #dbeafe 0%, #fecdd3 100%);
+}
+
+/* Centraliza o conteúdo e limita a largura */
+.login-wrapper {
+  max-width: 420px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: calc(100vh - 56px - 32px); // toolbar + padding
+  justify-content: center;
+}
+
+/* Área do logo / título */
+.logo-area {
+  text-align: center;
+
+  .logo-icon-wrapper {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 8px auto;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #4f46e5, #2563eb);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 12px 25px rgba(37, 99, 235, 0.4);
+
+    ion-icon {
+      font-size: 2.4rem;
+      color: #ffffff;
+    }
+  }
+
+  h1 {
+    margin: 4px 0 0 0;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .subtexto {
+    margin-top: 6px;
+    font-size: 0.9rem;
+    color: #374151;
+    line-height: 1.4;
+  }
+}
+
+/* Card mais escuro e com menos branco “estourado” */
+ion-card {
+  border-radius: 22px;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.3);
+  backdrop-filter: blur(10px);
+  --background: #e5e7eb; /* cinza clarinho, mas não branco puro */
+}
+
+/* Título dentro do card */
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #111827;
+}
+
+/* Campos de formulário */
+ion-item {
+  --background: #f9fafb;
+  --border-color: #cbd5f5;
+  --inner-border-width: 0 0 1px 0;
+  margin-top: 6px;
+  border-radius: 12px;
+}
+
+ion-label {
+  font-size: 0.85rem;
+  color: #4b5563;
+}
+
+/* TEXTO DOS INPUTS – bem legível */
+ion-input {
+  font-size: 0.95rem;
+  --color: #111827;              /* cor do texto digitado */
+  --placeholder-color: #11254e;  /* placeholder mais suave */
+  --padding-start: 8px;
+}
+
+/* Botão principal */
+ion-button {
+  margin-top: 18px;
+  --border-radius: 999px;
+  --background: linear-gradient(90deg, #4f46e5, #6366f1);
+  --box-shadow: 0 10px 20px rgba(79, 70, 229, 0.5);
+  font-weight: 600;
+}
+
+/* Troca entre login/cadastro */
+.switch-mode {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  text-align: center;
+  color: #6b7280;
+
+  span {
+    margin-right: 4px;
+  }
+
+  button {
+    border: none;
+    background: none;
+    color: #ec4899;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+  }
+}

@@ -1,20 +1,219 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Minhas Tarefas</ion-title>
+
+    <!-- Botão de sair -->
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()">
+        <ion-icon name="log-out-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+  <!-- Info do usuário logado -->
+  <div class="top-info" *ngIf="usuarioLogado">
+    <h2>Olá, {{ usuarioLogado.nome }} 👋</h2>
+
+    <!-- Mostra o tipo só se for admin -->
+    <p *ngIf="usuarioLogado.tipo === 'admin'">
+      Perfil: <strong>Administrador</strong>
+    </p>
   </div>
+
+  <!-- Cabeçalho interno padrão (fallback) -->
+  <div class="top-info" *ngIf="!usuarioLogado">
+    <h2>Organize seu dia 📝</h2>
+    <p>Cadastre, conclua e acompanhe suas tarefas de forma simples.</p>
+  </div>
+
+  <!-- 🔹 Lista de usuários (somente admin) -->
+  <ion-card *ngIf="usuarioLogado?.tipo === 'admin'">
+    <ion-card-header>
+      <ion-card-title>Usuários cadastrados</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-list lines="none">
+        <ion-item
+          button
+          detail="false"
+          *ngFor="let u of usuarios"
+          (click)="selecionarUsuario(u)"
+          [class.usuario-selecionado]="usuarioSelecionado?.id === u.id">
+
+          <ion-icon name="person-circle-outline" slot="start"></ion-icon>
+          <ion-label>
+            <h2>{{ u.nome }}</h2>
+            <p>{{ u.email }}</p>
+          </ion-label>
+
+          <ion-badge [color]="u.tipo === 'admin' ? 'danger' : 'medium'">
+            {{ u.tipo === 'admin' ? 'Admin' : 'Usuário' }}
+          </ion-badge>
+        </ion-item>
+      </ion-list>
+
+      <p *ngIf="usuarios.length === 0">
+        Nenhum usuário encontrado.
+      </p>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Formulário -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        {{ editando ? 'Editar tarefa' : 'Nova tarefa' }}
+        <ng-container *ngIf="usuarioLogado?.tipo === 'admin' && usuarioSelecionado">
+          – ({{ usuarioSelecionado.nome }})
+        </ng-container>
+      </ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-item lines="none" class="campo-form">
+        <ion-icon name="create-outline" slot="start"></ion-icon>
+        <ion-label position="floating">Título</ion-label>
+        <ion-input [(ngModel)]="titulo" placeholder="Ex.: Estudar Ionic"></ion-input>
+      </ion-item>
+
+      <ion-item lines="none" class="campo-form">
+        <ion-icon name="document-text-outline" slot="start"></ion-icon>
+        <ion-label position="floating">Descrição</ion-label>
+        <ion-textarea
+          autoGrow="true"
+          [(ngModel)]="descricao"
+          placeholder="Detalhes da tarefa (opcional)">
+        </ion-textarea>
+      </ion-item>
+
+      <ion-button expand="block" (click)="adicionarOuAtualizarTarefa()">
+        <ion-icon
+          [name]="editando ? 'save-outline' : 'add-circle-outline'"
+          slot="start">
+        </ion-icon>
+        {{ editando ? 'Salvar alterações' : 'Adicionar tarefa' }}
+      </ion-button>
+
+      <ion-button
+        *ngIf="editando"
+        expand="block"
+        fill="outline"
+        color="medium"
+        (click)="cancelarEdicao()">
+        Cancelar edição
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Lista de tarefas -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        Lista de tarefas
+        <ng-container *ngIf="usuarioLogado?.tipo === 'admin'">
+          <span *ngIf="usuarioSelecionado">
+            – {{ usuarioSelecionado.nome }}
+          </span>
+          <span *ngIf="!usuarioSelecionado">
+            – selecione um usuário acima
+          </span>
+        </ng-container>
+      </ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+
+      <!-- Estado vazio -->
+      <ng-container *ngIf="tarefas.length === 0; else listaTarefas">
+        <div class="empty-state">
+          <ion-icon name="sparkles-outline"></ion-icon>
+          <h3>Nenhuma tarefa ainda</h3>
+          <p>
+            <ng-container *ngIf="usuarioLogado?.tipo === 'admin' && !usuarioSelecionado">
+              Selecione um usuário acima para visualizar as tarefas.
+            </ng-container>
+            <ng-container *ngIf="!(usuarioLogado?.tipo === 'admin' && !usuarioSelecionado)">
+              Use o formulário acima ou o botão de + para adicionar sua primeira tarefa.
+            </ng-container>
+          </p>
+        </div>
+      </ng-container>
+
+      <!-- Lista preenchida -->
+      <ng-template #listaTarefas>
+        <ion-list lines="none">
+          <ion-item *ngFor="let tarefa of tarefas" class="tarefa-item">
+            <ion-icon
+              slot="start"
+              [name]="tarefa.status === 'concluida' ? 'checkmark-circle' : 'ellipse-outline'">
+            </ion-icon>
+
+            <ion-label>
+              <h2 [ngClass]="{ 'titulo-concluido': tarefa.status === 'concluida' }">
+                {{ tarefa.titulo }}
+              </h2>
+              <p>{{ tarefa.descricao }}</p>
+            </ion-label>
+
+            <ion-badge
+              [color]="tarefa.status === 'concluida' ? 'success' : 'warning'"
+              class="status-badge">
+              {{ tarefa.status === 'concluida' ? 'Concluída' : 'Pendente' }}
+            </ion-badge>
+
+            <ion-buttons slot="end">
+              <ion-button
+                size="small"
+                fill="clear"
+                (click)="alternarStatus(tarefa)">
+                {{ tarefa.status === 'concluida' ? 'Reabrir' : 'Concluir' }}
+              </ion-button>
+
+              <ion-button
+                size="small"
+                fill="clear"
+                (click)="editarTarefa(tarefa)">
+                Editar
+              </ion-button>
+
+              <ion-button
+                size="small"
+                fill="clear"
+                color="danger"
+                (click)="excluirTarefa(tarefa)">
+                Excluir
+              </ion-button>
+            </ion-buttons>
+          </ion-item>
+        </ion-list>
+      </ng-template>
+
+    </ion-card-content>
+  </ion-card>
+
+  <!-- FAB: botão flutuante "+" -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="novaTarefa()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <!-- Loading -->
+  <ion-loading
+    [isOpen]="carregando"
+    message="Aguarde..."
+  ></ion-loading>
+
+  <!-- Toast -->
+  <ion-toast
+    [isOpen]="mostrarToast"
+    [message]="mensagemToast"
+    duration="2000"
+    (didDismiss)="mostrarToast = false">
+  ></ion-toast>
+
 </ion-content>
